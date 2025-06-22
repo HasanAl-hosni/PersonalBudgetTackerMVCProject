@@ -1,0 +1,66 @@
+﻿@model PersonalBudgetTackerMVCProject.Models.HomeViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container mt-5">
+    <div class="text-center">
+        <h1 class="display-4">Hello, @Model.UserName 👋</h1>
+        <p class="lead">Here’s a quick summary of your finances.</p>
+
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card border-success mb-3">
+                    <div class="card-body text-success">
+                        <h5 class="card-title">Total Income</h5>
+                        <p class="card-text h4 text-success" id="incomeVal">Loading...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-danger mb-3">
+                    <div class="card-body text-danger">
+                        <h5 class="card-title">Total Expense</h5>
+                        <p class="card-text h4 text-danger" id="expenseVal">Loading...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-info mb-3">
+                    <div class="card-body text-info">
+                        <h5 class="card-title">Net Balance</h5>
+                        <p class="card-text h4 text-primary" id="balanceVal">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a class="btn btn-primary btn-lg mx-2" asp-controller="Transactions" asp-action="Index">
+                View Transactions
+            </a>
+            <a class="btn btn-outline-secondary btn-lg mx-2" asp-controller="Categories" asp-action="Index">
+                Manage Categories
+            </a>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        async function loadSummary() {
+            const response = await fetch('/api/summaryapi');
+            if (response.ok) {
+                const data = await response.json();
+
+                document.getElementById('incomeVal').innerText = '+' + data.income.toFixed(2) + ' $';
+                document.getElementById('expenseVal').innerText = '-' + data.expense.toFixed(2) + ' $';
+                document.getElementById('balanceVal').innerText = data.balance.toFixed(2) + ' $';
+            }
+        }
+
+        loadSummary(); // Call it on page load
+    </script>
+}
